@@ -1,0 +1,128 @@
+// CloudPulse AI - Prisma 7 schema
+// Connection URL is NOT declared here (Prisma 7 pattern). It is resolved
+// at runtime from DATABASE_URL via ../prisma.config.ts
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ResourceType {
+  ec2
+  s3
+  rds
+}
+
+enum ResourceStatus {
+  running
+  stopped
+  degraded
+}
+
+enum Severity {
+  low
+  medium
+  high
+}
+
+enum AnomalyType {
+  cpu
+  memory
+  traffic
+  responseTime
+  idle
+}
+
+enum IncidentStatus {
+  open
+  resolved
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+model Resource {
+  id            String   @id @default(uuid())
+  resourceId    String   @unique
+  resourceType  ResourceType
+  region        String
+  status        ResourceStatus @default(running)
+  configuration Json?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  metrics   Metric[]
+  incidents Incident[]
+  costs     Cost[]
+
+  @@index([resourceType])
+  @@map("resources")
+}
+
+model Metric {
+  id           String   @id @default(uuid())
+  resourceId   String
+  resource     Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  cpu          Float?
+  memory       Float?
+  network      Float
+  responseTime Float
+  requestCount Int
+
+  timestamp    DateTime
+
+  @@index([resourceId])
+  @@index([timestamp])
+  @@index([resourceId, timestamp])
+  @@map("metrics")
+}
+
+model Incident {
+  id             String         @id @default(uuid())
+  resourceId     String
+  resource       Resource       @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  severity       Severity
+  anomalyType    AnomalyType
+  detectedAt     DateTime
+  aiAnalysis     String?
+  recommendation Json?
+  status         IncidentStatus @default(open)
+
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+
+  @@index([resourceId])
+  @@index([detectedAt])
+  @@index([resourceId, anomalyType, status])
+  @@map("incidents")
+}
+
+model Cost {
+  id             String   @id @default(uuid())
+  resourceId     String
+  resource       Resource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  estimatedCost  Float
+  utilization    Float
+  recommendation Json?
+
+  createdAt      DateTime @default(now())
+
+  @@index([resourceId])
+  @@index([createdAt])
+  @@map("costs")
+}

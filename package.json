@@ -1,0 +1,18 @@
+{
+  "name": "cloudpulse-ai",
+  "private": true,
+  "version": "1.0.0",
+  "description": "CloudPulse AI - AI-Powered Cloud Infrastructure Monitoring, Anomaly Detection & Cost Optimization Platform",
+  "scripts": {
+    "postgres:up": "docker compose up -d",
+    "postgres:down": "docker compose down",
+    "postgres:logs": "docker compose logs -f postgres",
+    "backend:install": "npm install --prefix backend",
+    "frontend:install": "npm install --prefix frontend",
+    "install:all": "npm run backend:install && npm run frontend:install",
+    "prisma:generate": "npm --prefix backend run prisma:generate",
+    "prisma:migrate": "npm --prefix backend run prisma:migrate",
+    "backend:dev": "npm run dev --prefix backend",
+    "frontend:dev": "npm run dev --prefix frontend"
+  }
+}

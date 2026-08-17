@@ -1,0 +1,89 @@
+.chart-card {
+  padding: 20px 22px;
+  margin-bottom: 20px;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.legend-swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-line {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.chart-line.cpu-line {
+  stroke: var(--brand);
+}
+
+.chart-line.memory-line {
+  stroke: var(--violet);
+}
+
+.chart-area {
+  opacity: 0.14;
+}
+
+.chart-area.cpu-area {
+  fill: var(--brand);
+}
+
+.chart-area.memory-area {
+  fill: var(--violet);
+}
+
+.chart-animate-in {
+  animation: chart-rise 0.6s ease-out both;
+}
+
+@keyframes chart-rise {
+  from {
+    transform: translateY(14px) scaleY(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scaleY(1);
+    opacity: 1;
+  }
+}
+
+.chart-grid-line {
+  stroke: rgba(24, 34, 65, 0.06);
+  stroke-width: 1;
+}
+
+.chart-axis-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  fill: var(--ink-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chart-animate-in {
+    animation: none !important;
+  }
+}
