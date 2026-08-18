@@ -15,7 +15,7 @@
 
 import "dotenv/config";
 import path from "node:path";
-import { defineConfig } from "prisma/config";
+import { defineConfig, env } from "prisma/config";
 
 export default defineConfig({
   schema: path.join("prisma", "schema.prisma"),
@@ -23,6 +23,8 @@ export default defineConfig({
     path: path.join("prisma", "migrations"),
   },
   datasource: {
-    url: process.env.DATABASE_URL,
+    // Use the Prisma env helper so CLI commands (including `prisma migrate deploy`)
+    // can resolve the URL from the environment in Render and other CI/CD hosts.
+    url: env("DATABASE_URL"),
   },
 });
